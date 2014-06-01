@@ -27,9 +27,10 @@ function find_files_to_encode() {
   elif [ "`echo "$1" | grep -E "$INTERESTING_FILES"`" ]; then
     extension="`echo "$1" | sed -E 's/.*\.([a-z]+)/\1/'`"
     basefile="`basename "$1" .$extension`"
-    CMD="$CPU_LIMIT $HANDBRAKE -i \"$1\" -o \"${OUT_DIR}/${basefile}.mp4\""
-    echo "Running \"$CMD\""
-    $CMD
+    CMD='$CPU_LIMIT $HANDBRAKE -i "$1" -o "${OUT_DIR}/${basefile}.mp4"'
+    eval echo "Running \"$CMD\""
+    eval $CMD
+    eval echo "Done Running \"$CMD\""
   else
     echo "File \"$1\" does not match given INTERESTING_FILES regexp (${INTERESTING_FILES})"
   fi
@@ -45,4 +46,4 @@ function main() {
 }
 
 # The script has to go in background otherwise rtorrent would freeze while encoding
-main "$1" "$2" >> ${LOG_FILE} &
+(main "$1" "$2" 2>&1) >> ${LOG_FILE} &
